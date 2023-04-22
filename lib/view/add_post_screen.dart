@@ -99,30 +99,55 @@ class Post extends StatelessWidget {
             SizedBox(
               height: 20 * size,
             ),
-            Container(
-              height: 140 * size,
-              width: 140 * size,
-              decoration: BoxDecoration(
-                color: AppColor.secondColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SvgPicture.asset(
-                    AppImage.addIcon,
-                    height: 50 * size,
-                    width: 50 * size,
+            if (controller.image == null)
+              InkWell(
+                onTap: () {
+                  controller.pickImage();
+                },
+                child: Container(
+                  height: 140 * size,
+                  width: 140 * size,
+                  decoration: BoxDecoration(
+                    color: AppColor.secondColor,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  CommonText(
-                    text: 'Upload Post',
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.textColor,
-                    fontSize: font * 15,
-                  )
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SvgPicture.asset(
+                        AppImage.addIcon,
+                        height: 50 * size,
+                        width: 50 * size,
+                      ),
+                      CommonText(
+                        text: 'Upload Post',
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.textColor,
+                        fontSize: font * 15,
+                      )
+                    ],
+                  ),
+                ),
+              )
+            else
+              InkWell(
+                onTap: () {
+                  controller.pickImage();
+                },
+                child: Container(
+                  margin: EdgeInsets.only(right: 15),
+                  height: 140 * size,
+                  width: 140 * size,
+                  alignment: Alignment.topRight,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: FileImage(controller.image!),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
               ),
-            ),
             SizedBox(
               height: 30 * size,
             ),
@@ -141,7 +166,9 @@ class Post extends StatelessWidget {
             ),
             InkWell(
               borderRadius: BorderRadius.circular(20 * size),
-              onTap: () {},
+              onTap: () {
+                controller.selectDate(context);
+              },
               child: Container(
                 height: 50 * size,
                 width: Get.width,
@@ -156,7 +183,9 @@ class Post extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CommonText(
-                      text: 'Select Date',
+                      text: controller.selectedDate != null
+                          ? '${controller.selectedDate.toString().split(' ').first}'
+                          : 'Select Date',
                       fontSize: 16 * font,
                       color: AppColor.textColor,
                     ),
@@ -177,19 +206,28 @@ class Post extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      controller.updateEvent();
+                    },
                     child: Container(
                       height: 20 * size,
                       width: 20 * size,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColor.mainColor,
+                        color: controller.isEvent == true
+                            ? AppColor.mainColor
+                            : AppColor.transparent,
+                        border: Border.all(
+                          color: AppColor.mainColor,
+                        ),
                       ),
                       padding: EdgeInsets.all(2 * size),
                       child: FittedBox(
                         child: Icon(
                           Icons.done,
-                          color: AppColor.white,
+                          color: controller.isEvent == true
+                              ? AppColor.white
+                              : AppColor.transparent,
                         ),
                       ),
                     ),
@@ -214,7 +252,9 @@ class Post extends StatelessWidget {
               child: CommonButton(
                 radius: size * 15,
                 buttonColor: AppColor.mainColor,
-                onPressed: () {},
+                onPressed: () {
+                  controller.addPostToFirebase(context);
+                },
                 child: CommonText(
                   text: 'Add Post',
                   color: AppColor.black,
@@ -251,30 +291,53 @@ class Banner extends StatelessWidget {
             SizedBox(
               height: 20 * size,
             ),
-            Container(
-              height: 160 * size,
-              width: Get.width,
-              decoration: BoxDecoration(
-                color: AppColor.secondColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SvgPicture.asset(
-                    AppImage.addIcon,
-                    height: 50 * size,
-                    width: 50 * size,
+            if (controller.bannerImage == null)
+              InkWell(
+                onTap: () {
+                  controller.bannerPickImage();
+                },
+                child: Container(
+                  height: 160 * size,
+                  width: Get.width,
+                  decoration: BoxDecoration(
+                    color: AppColor.secondColor,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  CommonText(
-                    text: 'Upload Banner',
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.textColor,
-                    fontSize: font * 20,
-                  )
-                ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SvgPicture.asset(
+                        AppImage.addIcon,
+                        height: 50 * size,
+                        width: 50 * size,
+                      ),
+                      CommonText(
+                        text: 'Upload Banner',
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.textColor,
+                        fontSize: font * 20,
+                      )
+                    ],
+                  ),
+                ),
+              )
+            else
+              InkWell(
+                onTap: () {
+                  controller.bannerPickImage();
+                },
+                child: Container(
+                  height: 160 * size,
+                  width: Get.width,
+                  alignment: Alignment.topRight,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: FileImage(controller.bannerImage!),
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
               ),
-            ),
             SizedBox(
               height: 30 * size,
             ),
@@ -284,7 +347,9 @@ class Banner extends StatelessWidget {
               child: CommonButton(
                 radius: size * 15,
                 buttonColor: AppColor.mainColor,
-                onPressed: () {},
+                onPressed: () {
+                  controller.addBannerToFirebase(context);
+                },
                 child: CommonText(
                   text: 'Add Post',
                   color: AppColor.black,

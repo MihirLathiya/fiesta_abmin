@@ -46,6 +46,11 @@ dependencies:
   intl: ^0.18.0
   shimmer: ^2.0.0
 
+  # FIREBASE
+  firebase_core: ^2.7.0
+  cloud_firestore: ^4.4.3
+  firebase_storage: ^11.0.14
+
   # GET
   get: ^4.6.5
   get_storage: ^2.1.1
