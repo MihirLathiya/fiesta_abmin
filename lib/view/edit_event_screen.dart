@@ -1,4 +1,5 @@
 import 'package:admin/common/app_const.dart';
+import 'package:admin/common/button.dart';
 import 'package:admin/common/color.dart';
 import 'package:admin/common/image_path.dart';
 import 'package:admin/common/text.dart';
@@ -46,46 +47,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
         actions: [
           InkWell(
             onTap: () {
-              showDialog(
-                barrierDismissible: true,
-                barrierLabel: '',
-                context: context,
-                builder: (BuildContext context) {
-                  return SimpleDialog(
-                    backgroundColor: AppColor.secondColor,
-                    insetPadding: EdgeInsets.all(20),
-                    contentPadding: EdgeInsets.all(20),
-                    shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20 * size)),
-                    children: [
-                      Column(
-                        children: [
-                          CommonText(
-                            text: 'Are you sure you want to delete this post?',
-                            fontSize: 14 * font,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          SizedBox(
-                            height: 8 * size,
-                          ),
-                          Divider(
-                            thickness: 2,
-                          ),
-                          SizedBox(
-                            height: 16 * size,
-                          ),
-                          CommonText(
-                            text:
-                                'This is permanent no backup , no restore.\nWe warned, ok?',
-                            fontSize: 12 * font,
-                            maxLine: 2,
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
-                },
-              );
+              showDeleteDialog(context, size, font);
             },
             child: SvgPicture.asset(
               AppImage.deleteIcon,
@@ -155,7 +117,9 @@ class _EditEventScreenState extends State<EditEventScreen> {
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        showDeleteDialog(context, size, font);
+                      },
                       child: SvgPicture.asset(
                         AppImage.removeIcon,
                         height: size * 26,
@@ -171,4 +135,76 @@ class _EditEventScreenState extends State<EditEventScreen> {
       ),
     );
   }
+}
+
+showDeleteDialog(BuildContext context, double size, double font) {
+  return showDialog(
+    barrierDismissible: true,
+    barrierLabel: '',
+    context: context,
+    builder: (BuildContext context) {
+      return SimpleDialog(
+        backgroundColor: AppColor.secondColor,
+        insetPadding: EdgeInsets.all(20),
+        contentPadding: EdgeInsets.all(20),
+        shape:
+            OutlineInputBorder(borderRadius: BorderRadius.circular(20 * size)),
+        children: [
+          Column(
+            children: [
+              CommonText(
+                text: 'Are you sure you want to delete this post?',
+                fontSize: 14 * font,
+                fontWeight: FontWeight.bold,
+              ),
+              SizedBox(
+                height: 8 * size,
+              ),
+              Divider(
+                thickness: 2,
+              ),
+              SizedBox(
+                height: 16 * size,
+              ),
+              CommonText(
+                text:
+                    'This is permanent no backup , no restore.\nWe warned, ok?',
+                fontSize: 12 * font,
+                maxLine: 2,
+              ),
+              SizedBox(
+                height: 16 * size,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CommonButton(
+                      buttonColor: AppColor.mainColor,
+                      onPressed: () {},
+                      child: CommonText(text: 'Yes'),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: CommonButton(
+                      buttonColor: AppColor.textColor,
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: CommonText(
+                        text: 'No',
+                        color: AppColor.white,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
+      );
+    },
+  );
 }

@@ -205,7 +205,9 @@ class Banner extends StatelessWidget {
               ),
               child: Center(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    showDeleteDialog(context, size, font);
+                  },
                   child: SvgPicture.asset(
                     AppImage.deleteIcon,
                     height: size * 26,
