@@ -5,10 +5,12 @@ import 'package:admin/common/text.dart';
 import 'package:admin/controller/edit_post_controller.dart';
 import 'package:admin/view/edit_event_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 class EditPostScreen extends StatefulWidget {
@@ -172,57 +174,80 @@ class Banner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      physics: BouncingScrollPhysics(),
-      itemCount: 10,
-      padding: EdgeInsets.all(20 * size),
-      itemBuilder: (context, index) {
-        return Stack(
-          alignment: Alignment.topRight,
-          children: [
-            Container(
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              height: 140 * size,
-              width: Get.width,
-              decoration: BoxDecoration(
-                color: AppColor.secondColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Image.network(
-                'https://wallpapercave.com/fwp/wp11771332.jpg',
-                fit: BoxFit.cover,
-              ),
-            ),
-            Container(
-              height: 50 * size,
-              width: 70 * size,
-              decoration: BoxDecoration(
-                color: AppColor.mainColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  topRight: Radius.circular(20),
-                ),
-              ),
-              child: Center(
-                child: InkWell(
-                  onTap: () {
-                    showDeleteDialog(context, size, font);
-                  },
-                  child: SvgPicture.asset(
-                    AppImage.deleteIcon,
-                    height: size * 26,
-                    width: size * 26,
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('Banner')
+          .orderBy('bannerDate', descending: false)
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.separated(
+            physics: BouncingScrollPhysics(),
+            itemCount: snapshot.data!.docs.length,
+            padding: EdgeInsets.all(20 * size),
+            itemBuilder: (context, index) {
+              return Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    height: 140 * size,
+                    width: Get.width,
+                    decoration: BoxDecoration(
+                      color: AppColor.secondColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Image.network(
+                      '${snapshot.data!.docs[index]['bannerImage']}',
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-              ),
-            )
-          ],
-        );
-      },
-      separatorBuilder: (context, index) {
-        return SizedBox(
-          height: 20 * size,
-        );
+                  Container(
+                    height: 50 * size,
+                    width: 70 * size,
+                    decoration: BoxDecoration(
+                      color: AppColor.mainColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: Center(
+                      child: InkWell(
+                        onTap: () {
+                          showDeleteDialog(context, size, font);
+                        },
+                        child: SvgPicture.asset(
+                          AppImage.deleteIcon,
+                          height: size * 26,
+                          width: size * 26,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+            separatorBuilder: (context, index) {
+              return SizedBox(
+                height: 20 * size,
+              );
+            },
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('Server Error'),
+          );
+        } else {
+          return Center(
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Lottie.asset(AppImage.loader),
+            ),
+          );
+        }
       },
     );
   }
