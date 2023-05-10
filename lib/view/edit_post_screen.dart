@@ -1,4 +1,5 @@
 import 'package:admin/common/app_const.dart';
+import 'package:admin/common/button.dart';
 import 'package:admin/common/color.dart';
 import 'package:admin/common/image_path.dart';
 import 'package:admin/common/text.dart';
@@ -198,9 +199,26 @@ class Banner extends StatelessWidget {
                       color: AppColor.secondColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Image.network(
-                      '${snapshot.data!.docs[index]['bannerImage']}',
+                    child: CachedNetworkImage(
+                      height: 200 * size,
+                      width: 189 * size,
+                      imageUrl: '${snapshot.data!.docs[index]['bannerImage']}',
                       fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Icon(Icons.error_outline),
+                      ),
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.withOpacity(0.4),
+                          highlightColor: Colors.grey.withOpacity(0.2),
+                          enabled: true,
+                          child: Container(
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   Container(
@@ -216,7 +234,13 @@ class Banner extends StatelessWidget {
                     child: Center(
                       child: InkWell(
                         onTap: () {
-                          showDeleteDialog(context, size, font);
+                          showDeleteDialog1(
+                              snapshot.data!.docs[index].id,
+                              snapshot.data!.docs[index]['name'],
+                              controller,
+                              context,
+                              size,
+                              font);
                         },
                         child: SvgPicture.asset(
                           AppImage.deleteIcon,
@@ -251,4 +275,80 @@ class Banner extends StatelessWidget {
       },
     );
   }
+}
+
+showDeleteDialog1(String? id, String? name, EditPostController controller,
+    BuildContext context, double size, double font) {
+  return showDialog(
+    barrierDismissible: true,
+    barrierLabel: '',
+    context: context,
+    builder: (BuildContext context) {
+      return SimpleDialog(
+        backgroundColor: AppColor.secondColor,
+        insetPadding: EdgeInsets.all(20),
+        contentPadding: EdgeInsets.all(20),
+        shape:
+            OutlineInputBorder(borderRadius: BorderRadius.circular(20 * size)),
+        children: [
+          Column(
+            children: [
+              CommonText(
+                text: 'Are you sure you want to delete this post?',
+                fontSize: 14 * font,
+                fontWeight: FontWeight.bold,
+              ),
+              SizedBox(
+                height: 8 * size,
+              ),
+              Divider(
+                thickness: 2,
+              ),
+              SizedBox(
+                height: 16 * size,
+              ),
+              CommonText(
+                text:
+                    'This is permanent no backup , no restore.\nWe warned, ok?',
+                fontSize: 12 * font,
+                maxLine: 2,
+              ),
+              SizedBox(
+                height: 16 * size,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: CommonButton(
+                      buttonColor: AppColor.mainColor,
+                      onPressed: () {
+                        controller.deleteBanner(
+                            id: id, name: name, context: context);
+                      },
+                      child: CommonText(text: 'Yes'),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: CommonButton(
+                      buttonColor: AppColor.textColor,
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: CommonText(
+                        text: 'No',
+                        color: AppColor.white,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ],
+      );
+    },
+  );
 }

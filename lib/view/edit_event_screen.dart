@@ -46,6 +46,18 @@ class _EditEventScreenState extends State<EditEventScreen> {
         ),
         actions: [
           InkWell(
+            onTap: () {},
+            child: SvgPicture.asset(
+              AppImage.addIcon,
+              height: size * 30,
+              width: size * 30,
+              color: AppColor.black,
+            ),
+          ),
+          SizedBox(
+            width: 20 * size,
+          ),
+          InkWell(
             onTap: () {
               showDeleteDialog(context, size, font);
             },

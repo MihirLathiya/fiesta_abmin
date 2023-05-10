@@ -1,5 +1,5 @@
 import 'package:admin/controller_binding.dart';
-import 'package:admin/view/splash_screen.dart';
+import 'package:admin/view/bottom_bar_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,13 +23,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Admin',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      initialBinding: ControllerBindings(),
-      home: SplashScreen(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Admin',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialBinding: ControllerBindings(),
+        home: BottomBarScreen()
+        // SplashScreen(),
+        );
   }
 }

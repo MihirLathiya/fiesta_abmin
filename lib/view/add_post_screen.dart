@@ -351,7 +351,7 @@ class Banner extends StatelessWidget {
                   controller.addBannerToFirebase(context);
                 },
                 child: CommonText(
-                  text: 'Add Post',
+                  text: 'Add Banner',
                   color: AppColor.black,
                   fontSize: font * 16,
                 ),

@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 
 class BottomBarScreen extends StatelessWidget {
   BottomBarScreen({Key? key}) : super(key: key);
-  BottomBarController bottomBarController = Get.find();
+  BottomBarController bottomBarController = Get.put(BottomBarController());
 
   @override
   Widget build(BuildContext context) {

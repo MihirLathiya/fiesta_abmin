@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:admin/common/common_snackbar.dart';
 import 'package:admin/common/image_path.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -218,26 +219,26 @@ class AddPostController extends GetxController {
         }).then((value) {
           hideProgressDialog();
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Banner Add Successfully'),
-            ),
+          CommonSnackBar.getSuccessSnackBar(
+            context: context,
+            title: 'Banner Add Successfully',
           );
 
           clearAll();
         });
       } catch (e) {
         hideProgressDialog();
+        CommonSnackBar.getFailedSnackBar(
+          context: context,
+          title: '$e',
+        );
       }
     } else {
       hideProgressDialog();
 
       /// PickImage
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Select Banner For Event'),
-        ),
-      );
+      CommonSnackBar.getWarningSnackBar(
+          context: context, title: 'Select Banner For Event');
     }
   }
 
